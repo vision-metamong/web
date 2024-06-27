@@ -1,6 +1,14 @@
 import { css, Global } from '@emotion/react';
 import type { AppProps } from 'next/app';
 import Image from 'next/image';
+import localFont from 'next/font/local';
+
+const pretendard = localFont({
+  src: '../fonts/PretendardVariable.woff2',
+  display: 'swap',
+  weight: '45 920',
+  variable: '--font-pretendard',
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -11,6 +19,8 @@ export default function App({ Component, pageProps }: AppProps) {
             box-sizing: border-box;
             padding: 0;
             margin: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont,
+              'Segoe UI', Roboto, 'Helvetica Neue', Arial;
           }
 
           html,
