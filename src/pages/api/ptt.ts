@@ -1,17 +1,19 @@
 import { kv } from '@vercel/kv';
-import { readPdfText } from 'pdf-text-reader';
+import pdf from 'pdf-parse';
 
 export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const { file } = req.body;
       const buffer = Buffer.from(file, 'base64');
-      const uint8Array = new Uint8Array(buffer);
-      const pdfText = await readPdfText({ data: uint8Array });
 
-      await kv.set(`${req.body.user}-resume`, pdfText);
+      const dataBuffer = buffer;
 
-      res.status(200).json({ text: pdfText });
+      const data = await pdf(dataBuffer);
+
+      await kv.set(`${req.body.user}-resume`, data.text);
+
+      res.status(200).json({ text: data.text });
     } catch (error) {
       res.status(500).json({ error });
     }
