@@ -1,8 +1,16 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback } from 'react';
 
 export default function Home() {
+  const feedbackLinkHandler = useCallback(() => {
+    const id = prompt('전화번호 뒷자리를 입력해주세요');
+    if (id) {
+      window.location.href = `/feedback/${id}`;
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Title>
@@ -12,20 +20,7 @@ export default function Home() {
       <Desc>지원하는 회사와 원하는 면접관으로 연습할 수 있습니다.</Desc>
       <ButtonBox>
         <UploadLink href={'/upload'}>이력서 업로드하기</UploadLink>
-        <FeedbackLink
-          onClick={() => {
-            const id = prompt(
-              '결과 고유번호를 입력해주세요',
-              '전화번호 뒷자리'
-            );
-
-            if (id) {
-              window.location.href = `/feedback/${id}`;
-            }
-          }}
-        >
-          결과 보기
-        </FeedbackLink>
+        <FeedbackLink onClick={feedbackLinkHandler}>결과 보기</FeedbackLink>
       </ButtonBox>
       <VisionPro
         src="/visionpro.png"
@@ -97,25 +92,32 @@ const ButtonBox = styled.div`
   align-items: center;
   justify-content: center;
   gap: 30px;
-  * {
-    display: inline-block;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 304px;
-    height: 98px;
-    border-radius: 55px;
-    /* Drop Shadow */
-    box-shadow: 0px 0px 30px 0px rgba(35, 164, 231, 0.1);
-  }
 `;
 
 const UploadLink = styled(Link)`
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 304px;
+  height: 98px;
+  border-radius: 55px;
+  /* Drop Shadow */
+  box-shadow: 0px 0px 30px 0px rgba(35, 164, 231, 0.1);
   color: #000;
   background: #fff;
 `;
 
 const FeedbackLink = styled.div`
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 304px;
+  height: 98px;
+  border-radius: 55px;
+  /* Drop Shadow */
+  box-shadow: 0px 0px 30px 0px rgba(35, 164, 231, 0.1);
   color: #fff;
   background: #000;
 `;

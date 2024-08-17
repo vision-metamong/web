@@ -1,47 +1,56 @@
 import styled from '@emotion/styled';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, useCallback, useState } from 'react';
 
 export default function Upload() {
   const [user, setUser] = useState('');
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleFileChange = async (event: any) => {
-    const file = event.target.files?.[0];
-    setSelectedFile(file);
+  const userInputHandler = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setUser(e.target.value),
+    []
+  );
 
-    setLoading(true);
-    try {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const result = reader.result as string;
-        if (result) {
-          const base64String = result.split(',')[1];
-          const response = await fetch('/api/ptt', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user, file: base64String }),
-          });
+  const handleFileChange = useCallback(
+    async (event: any) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-          if (response.ok) {
-            // Handle success response
-          } else {
-            const { error } = await response.json();
-            // Handle error appropriately
+      setSelectedFile(file);
+      setLoading(true);
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const result = reader.result as string;
+          if (result) {
+            const base64String = result.split(',')[1];
+            const response = await fetch('/api/ptt', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ user, file: base64String }),
+            });
+
+            if (response.ok) {
+              // Handle success response
+            } else {
+              const { error } = await response.json();
+              console.log(error);
+            }
           }
-          setLoading(false);
-        }
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user]
+  );
 
   return (
     <Wrapper>
@@ -59,7 +68,7 @@ export default function Upload() {
           <ResumeIcon src="/resume.png" alt="resume" width={126} height={126} />
           <Desc>
             ID(전화번호 뒷자리):
-            <Input onChange={(e) => setUser(e.target.value)} />
+            <Input onChange={userInputHandler} />
           </Desc>
           <SubmitArea>
             이력서를 올려주세요

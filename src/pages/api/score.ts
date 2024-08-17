@@ -1,19 +1,7 @@
-import { kv } from '@vercel/kv';
 import OpenAI from 'openai';
-import { zodResponseFormat } from 'openai/helpers/zod';
-import { z } from 'zod';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
-
-const jsonRes = z.object({
-  total: z.number(),
-  communication: z.number(),
-  competence: z.number(),
-  perspectives: z.number(),
-  adaptability: z.number(),
-  attitude: z.number(),
 });
 
 export default async function handler(req: any, res: any) {
@@ -37,7 +25,9 @@ export default async function handler(req: any, res: any) {
         response_format: { type: 'json_object' },
       });
       const result = completion.choices[0].message.content;
-      // console.log(JSON.parse(result));
+      if (!result) {
+        throw new Error('Invalid response in POST /api/score');
+      }
 
       res.status(200).json({ text: result });
     } catch (error) {

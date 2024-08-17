@@ -23,6 +23,9 @@ export default function Feedback() {
     fetch('/api/feedback?user=' + params.id)
       .then((res) => res.json())
       .then((data) => {
+        if (!data.text) {
+          throw new Error('Invalid response in GET /api/feedback');
+        }
         setFeedback(data.text);
         fetch('/api/score', {
           method: 'POST',
@@ -36,14 +39,17 @@ export default function Feedback() {
         })
           .then((res) => res.json())
           .then((data) => {
-            if (data.text !== undefined) {
-              const result = JSON.parse(data.text);
-              setScore(result);
+            if (!data.text) {
+              throw new Error('Invalid response in POST /api/score');
             }
+
+            const result = JSON.parse(data.text);
+            setScore(result);
             setLoading(false);
           })
           .catch((err) => {
-            console.log(err);
+            setLoading(false);
+            console.error(err);
           });
       });
   }, [params]);
