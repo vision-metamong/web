@@ -4,6 +4,7 @@ import pdf from 'pdf-parse';
 export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
+      console.log('ppap');
       const { file } = req.body;
       const buffer = Buffer.from(file, 'base64');
 

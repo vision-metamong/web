@@ -9,12 +9,14 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const { history, user } = req.body;
+
+      console.log('history', history);
+      console.log('user', user);
       if (!history || !user) {
         throw new Error('Invalid request payload');
       }
 
       const ppap = JSON.stringify(history);
-      console.log(ppap);
       const completion = await openai.chat.completions.create({
         messages: [
           {
@@ -36,7 +38,9 @@ export default async function handler(req: any, res: any) {
     }
   } else if (req.method === 'GET') {
     try {
+      console.log('ppap', req.query.user);
       const feedback = await kv.get(`${req.query.user}-feedback`);
+
       res.status(200).json({ text: feedback });
     } catch (error) {
       res.status(500).json({ error: 'Error reading PDF file.' });
