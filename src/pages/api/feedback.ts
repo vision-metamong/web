@@ -1,5 +1,7 @@
-import { kv } from '@vercel/kv';
 import OpenAI from 'openai';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -35,7 +37,7 @@ export default async function handler(req: any, res: any) {
         throw new Error('Invalid response in POST /api/feedback');
       }
 
-      await kv.set(`${user}-feedback`, result);
+      await redis.set(`${user}-feedback`, result);
 
       res.status(200).json({ text: result });
     } catch (error) {
@@ -43,10 +45,11 @@ export default async function handler(req: any, res: any) {
     }
   } else if (req.method === 'GET') {
     try {
-      const feedback = await kv.get(`${req.query.user}-feedback`);
+      const feedback = await redis.get(`${req.query.user}-feedback`);
 
       res.status(200).json({ text: feedback });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: 'Error reading PDF file.' });
     }
   } else {

@@ -1,9 +1,11 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req: any, res: any) {
   if (req.method === 'GET') {
     try {
-      const resume = await kv.get(`${req.query.user}-resume`);
+      const resume = await redis.get(`${req.query.user}-resume`);
 
       res.status(200).json({ text: resume });
     } catch (error) {

@@ -1,5 +1,7 @@
-import { kv } from '@vercel/kv';
 import pdf from 'pdf-parse';
+import { Redis } from '@upstash/redis';
+
+const redis = Redis.fromEnv();
 
 export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
@@ -17,7 +19,7 @@ export default async function handler(req: any, res: any) {
         throw new Error('Invalid pdf-parse result: ' + data.text);
       }
 
-      await kv.set(`${req.body.user}-resume`, data.text);
+      await redis.set(`${req.body.user}-resume`, data.text);
 
       res.status(200).json({ text: data.text });
     } catch (error) {

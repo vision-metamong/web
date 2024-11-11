@@ -97,7 +97,7 @@ export default function Feedback() {
               </Box>
             </Status>
           </Dashboard>
-          <Result>{feedback + feedback}</Result>
+          <Result>{feedback}</Result>
         </>
       )}
     </Wrapper>
@@ -228,7 +228,15 @@ const Result = styled(ReactMarkdown)`
   margin-left: 29px;
   border-radius: 10px;
   border: 1.2px solid #b0c0d0;
-  padding: 25px;
+  padding: 25px 15px 25px 45px;
+  font-size: 24px;
+  width: 100%;
+  height: 100%;
+
+  p,
+  li {
+    padding: 2px 0;
+  }
 
   @media (max-width: 1300px) {
     margin: 0;
